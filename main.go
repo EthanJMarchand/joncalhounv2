@@ -2,7 +2,10 @@ package main
 
 import (
 	"fmt"
+	"html/template"
+	"log"
 	"net/http"
+	"path/filepath"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
@@ -11,12 +14,19 @@ import (
 // homeHandler is currently my own routing handler function
 func homeHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	html := `
-		<h1>Welcome to my awesome site!</h1>
-		<a href="/contact">contact</a>
-		<a href="/faq">faq</a>
-	`
-	fmt.Fprint(w, html)
+	tplPath := filepath.Join("templates", "home.gohtml") // This makes sure that, no matter the operating system, the path is proper. On windows, they use \ instead of /. Mac, and Linux are unix based so they use /.
+	tpl, err := template.ParseFiles(tplPath)
+	if err != nil {
+		log.Printf("parsing template: %v", err)
+		http.Error(w, "There was an error parsing the template", http.StatusInternalServerError)
+		return
+	}
+	err = tpl.Execute(w, nil)
+	if err != nil {
+		log.Printf("executing template: %v", err)
+		http.Error(w, "There was an error executing the template", http.StatusInternalServerError)
+		return
+	}
 }
 
 // contactHandler serves up the contact page when someone visits the contact route
