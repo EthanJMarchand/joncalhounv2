@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/middleware"
 )
 
 // homeHandler is currently my own routing handler function
@@ -51,9 +52,13 @@ func faqHandler(w http.ResponseWriter, r *http.Request) {
 // main is the main function of my program.
 func main() {
 	r := chi.NewRouter()
+	r.Use(middleware.Logger)
 	r.Get("/", homeHandler)
 	r.Get("/contact", contactHandler)
 	r.Get("/faq", faqHandler)
+	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
+		http.Error(w, "404 | Page not found", http.StatusNotFound)
+	})
 	fmt.Println("starting server on :3000")
 	http.ListenAndServe(":3000", r)
 }
