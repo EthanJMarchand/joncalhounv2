@@ -46,17 +46,6 @@ func faqHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, html)
 }
 
-// func pathHandler(w http.ResponseWriter, r *http.Request) {
-// 	switch r.URL.Path {
-// 	case "/":
-// 		homeHandler(w, r)
-// 	case "/contact":
-// 		contactHandler(w, r)
-// 	default:
-// 		http.Error(w, "404 | Page not found", http.StatusNotFound)
-// 	}
-// }
-
 type Router struct{}
 
 func (router Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
