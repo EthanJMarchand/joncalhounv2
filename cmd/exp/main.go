@@ -6,18 +6,20 @@ import (
 )
 
 func main() {
-	err := CreateUser()
-	fmt.Println(err)
+	err := B()
+	// TODO: Determind if the `err` variable is an `ErrNotFound`
+	fmt.Printf("The err contains ErrNotFound: %v\n", errors.Is(err, ErrNotFound))
 }
 
-func Connect() error {
-	return errors.New("connection failed")
+// It is common for packages like database/sql to return
+// an error that is predefined like this one.
+var ErrNotFound = errors.New("not found")
+
+func A() error {
+	return ErrNotFound
 }
 
-func CreateUser() error {
-	err := Connect()
-	if err != nil {
-		return fmt.Errorf("create user: %w", err)
-	}
-	return nil
+func B() error {
+	err := A()
+	return fmt.Errorf("b: %w", err)
 }

@@ -25,6 +25,9 @@ func main() {
 	r.Get("/faq", controllers.StaticHandler(
 		views.Must(views.Parse(filepath.Join("templates", "faq.gohtml")))))
 
+	r.Get("/login", controllers.StaticHandler(
+		views.Must(views.Parse(filepath.Join("templates", "login.gohtml")))))
+
 	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "404 | Page not found", http.StatusNotFound)
 	})
