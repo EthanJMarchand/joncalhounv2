@@ -2,29 +2,23 @@ package main
 
 import (
 	"fmt"
-	"html/template"
 	"log"
 	"net/http"
 	"path/filepath"
 
+	"github.com/ethanjmachand/lenslocked/views"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 )
 
-func executeTemplate(w http.ResponseWriter, path string) {
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	tpl, err := template.ParseFiles(path)
+func executeTemplate(w http.ResponseWriter, filepath string) {
+	t, err := views.Parse(filepath)
 	if err != nil {
 		log.Printf("parsing template: %v", err)
 		http.Error(w, "There was an error parsing the template", http.StatusInternalServerError)
 		return
 	}
-	err = tpl.Execute(w, nil)
-	if err != nil {
-		log.Printf("executing template: %v", err)
-		http.Error(w, "There was an error executing the template", http.StatusInternalServerError)
-		return
-	}
+	t.Execute(w, nil)
 }
 
 // homeHandler is currently my own routing handler function
@@ -44,6 +38,8 @@ func faqHandler(w http.ResponseWriter, r *http.Request) {
 
 // main is the main function of my program.
 func main() {
+	// Parse the template
+
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
 	r.Get("/", homeHandler)
