@@ -1,18 +1,22 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
-
-	"github.com/ethanjmachand/lenslocked/views"
 )
 
 type Users struct {
 	Templates struct {
-		NewTPL views.Template
+		NewTPL Template
 	}
 }
 
 func (u Users) New(w http.ResponseWriter, r *http.Request) {
 	// We need a view to render
 	u.Templates.NewTPL.Execute(w, nil)
+}
+
+func (u Users) CreateUser(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprint(w, "Email:", r.FormValue("email"), "\n")
+	fmt.Fprint(w, "Password:", r.FormValue("password"))
 }
