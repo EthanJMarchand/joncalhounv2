@@ -12,8 +12,11 @@ type Users struct {
 }
 
 func (u Users) New(w http.ResponseWriter, r *http.Request) {
-	// We need a view to render
-	u.Templates.NewTPL.Execute(w, nil)
+	var data struct {
+		Email string
+	}
+	data.Email = r.FormValue("email")
+	u.Templates.NewTPL.Execute(w, data)
 }
 
 func (u Users) CreateUser(w http.ResponseWriter, r *http.Request) {
