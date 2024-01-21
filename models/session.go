@@ -14,20 +14,21 @@ const (
 	MinBytesPerToken = 32
 )
 
+// Session type is all the properties needed to setup a session for a user.
 type Session struct {
-	ID     int
-	UserId int
-	// Token is only set when creating a new session. When looking up a session, this will be left empty as we only store the hash of a session token and we cannot reverse it.
-	Token     string
+	ID        int
+	UserId    int
+	Token     string // Token is only set when creating a new session. When looking up a session, this will be left empty as we only store the hash of a session token and we cannot reverse it.
 	TokenHash string
 }
 
+// SessionService type holds out *sql.DB so that we have access to the DB connection when using it in main.
 type SessionService struct {
-	DB *sql.DB
-	// BytesPerToken is used to determine how many bytes to use when generating each token session. This is value is not set, or less than the MinBytesPerToken const it be be irnored and MinBytesPerToken will be used.
-	BytesPerToken int
+	DB            *sql.DB
+	BytesPerToken int // BytesPerToken is used to determine how many bytes to use when generating each token session. This is value is not set, or less than the MinBytesPerToken const it be be ignored and MinBytesPerToken will be used.
 }
 
+// Create is a method on a *SessionService that takes a userID int, and returns a *Session and an error. This will use the MinBytesPerToken const if the BytesPertoken properties is set to less than 32, or is not set at all. Create pushes the Session to the DB.
 func (ss *SessionService) Create(userID int) (*Session, error) {
 	bytesPerToken := ss.BytesPerToken
 	if bytesPerToken < MinBytesPerToken {
@@ -61,6 +62,7 @@ func (ss *SessionService) Create(userID int) (*Session, error) {
 	return &session, nil
 }
 
+// LookupUser is a method on the *SessionService type that takes the token string, hashes it, queries the DB with the hashedtoken string, and returns the user, if exists.
 func (ss *SessionService) LookupUser(token string) (*User, error) {
 	tokenHash := ss.hash(token)
 	var user User
@@ -82,6 +84,7 @@ func (ss *SessionService) LookupUser(token string) (*User, error) {
 	return &user, nil
 }
 
+// Delete is a method on the *SessionService type that takes the token string, hashes it, and then deletes the data entry from the DB.
 func (ss *SessionService) Delete(token string) error {
 	tokenHash := ss.hash(token)
 	_, err := ss.DB.Exec(`

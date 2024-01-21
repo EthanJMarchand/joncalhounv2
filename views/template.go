@@ -12,6 +12,7 @@ import (
 	"github.com/gorilla/csrf"
 )
 
+// Must is a helper function that takes a Template, and an error, panics if there is an error, and only returns the Template.
 func Must(t Template, err error) Template {
 	if err != nil {
 		panic(err)
@@ -19,6 +20,7 @@ func Must(t Template, err error) Template {
 	return t
 }
 
+// ParseFS takes a fs.FS, and an number of pattern strings, and returns a template, and an error.
 func ParseFS(fs fs.FS, patterns ...string) (Template, error) {
 	tpl := template.New(patterns[0])
 	tpl.Funcs(template.FuncMap{
@@ -37,20 +39,12 @@ func ParseFS(fs fs.FS, patterns ...string) (Template, error) {
 	}, nil
 }
 
-// func Parse(filepath string) (Template, error) {
-// 	tpl, err := template.ParseFiles(filepath)
-// 	if err != nil {
-// 		return Template{}, fmt.Errorf("parsing template: %w", err)
-// 	}
-// 	return Template{
-// 		htmlTpl: tpl,
-// 	}, nil
-// }
-
+// Template type gives us the ability to write our own template functions on the *template.Template type.
 type Template struct {
 	htmlTpl *template.Template
 }
 
+// Execute is a method on the
 func (t Template) Execute(w http.ResponseWriter, r *http.Request, data interface{}) {
 	tpl, err := t.htmlTpl.Clone()
 	if err != nil {

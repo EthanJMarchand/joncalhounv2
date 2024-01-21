@@ -6,6 +6,7 @@ import (
 	"fmt"
 )
 
+// Bytes takes a int, and returns a []byte of randomly generated base 64 characters; and an error.
 func Bytes(n int) ([]byte, error) {
 	b := make([]byte, n)
 	nRead, err := rand.Read(b)
@@ -18,7 +19,7 @@ func Bytes(n int) ([]byte, error) {
 	return b, nil
 }
 
-// n is the number of bytes being used to generate a random string.
+// String takes a int, and returns a string of randomly generated base 64 characters, and an error. Under the hood, it uses the Bytes function.
 func String(n int) (string, error) {
 	b, err := Bytes(n)
 	if err != nil {

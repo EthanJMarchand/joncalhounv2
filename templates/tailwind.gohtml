@@ -16,6 +16,13 @@
 				<a class="text-lg hover:text-gray-600 mr-8 font-bold" href="/faq">FAQ</a>
 			</div>
 			<div>
+				{{/* TODO: Sign out link */}}
+				<form action="/signout" method="POST" class="inline pr-4">
+					<div class="hidden">
+							{{ csrfField }}
+					</div>
+					<button type="submit" class="hover:text-blue-500">Sign out</button>
+				</form>
 				<a id="signin" class="hover:text-blue-500" href="/signin">Sign in</a>
 				<a id="signup" class="ml-6 py-3 px-6 bg-blue-500 hover:bg-blue-600 rounded text-white" href="/signup">Sign up</a>
 			</div>
