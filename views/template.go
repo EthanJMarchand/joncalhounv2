@@ -44,7 +44,7 @@ type Template struct {
 	htmlTpl *template.Template
 }
 
-// Execute is a method on the
+// Execute is a method on the Template type that takes a http.ResponseWriter, a *http.Request and data, and writes to bytes.Buffer, but only to catch an error in our tpl.Funcs before setting the header for the user. At the very end, io.Copy copies the &buf and writes to w.  
 func (t Template) Execute(w http.ResponseWriter, r *http.Request, data interface{}) {
 	tpl, err := t.htmlTpl.Clone()
 	if err != nil {

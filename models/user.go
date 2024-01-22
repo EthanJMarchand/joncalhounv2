@@ -43,7 +43,7 @@ func (us *UserService) Create(email, password string) (*User, error) {
 	return &user, nil
 }
 
-// Authenticate is a method on a *UserService. It takes an email, and a password string, and returns an *User. First, it changes the email to lowercase, and then it queries the DB for the userId, and Password hash, and populates the user properties. Then it compares the Password hashes. If no errors, returns the User.
+// Authenticate is a method on a *UserService. It takes an email, and a password string, and returns a *User. First, it changes the email to lowercase, and then it queries the DB for the userId, and Password hash, and populates the user properties. Then it compares the Password hashes. If no errors, returns the User.
 func (us *UserService) Authenticate(email, password string) (*User, error) {
 	email = strings.ToLower(email)
 	user := User{
