@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/ethanjmachand/lenslocked/controllers"
+	"github.com/ethanjmachand/lenslocked/migrations"
 	"github.com/ethanjmachand/lenslocked/models"
 	"github.com/ethanjmachand/lenslocked/templates"
 	"github.com/ethanjmachand/lenslocked/views"
@@ -31,6 +32,11 @@ func main() {
 		panic(err)
 	}
 	defer db.Close()
+
+	err = models.MigrateFS(db, migrations.FS, ".")
+	if err != nil {
+		panic(err)
+	}
 
 	// Here, we pass the DB connection to our userService, and our sessionService.
 	userService := models.UserService{
