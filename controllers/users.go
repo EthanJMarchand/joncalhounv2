@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/ethanjmachand/lenslocked/context"
 	"github.com/ethanjmachand/lenslocked/models"
 )
 
@@ -82,18 +83,7 @@ func (u Users) ProcessSignIn(w http.ResponseWriter, r *http.Request) {
 
 // CurrentUser is the handler for when you visit /users/me. It reads your session cookie, compares it to the DB, and tells you what your email is.
 func (u Users) CurrentUser(w http.ResponseWriter, r *http.Request) {
-	token, err := readCookie(r, CookieSession)
-	if err != nil {
-		fmt.Println(err)
-		http.Redirect(w, r, "/signin", http.StatusFound)
-		return
-	}
-	user, err := u.SessionService.LookupUser(token)
-	if err != nil {
-		fmt.Println(err)
-		http.Redirect(w, r, "/signin", http.StatusFound)
-		return
-	}
+	user := context.User(r.Context())
 	u.Templates.Currentuser.Execute(w, r, user)
 }
 
@@ -112,4 +102,40 @@ func (u Users) ProcessSignout(w http.ResponseWriter, r *http.Request) {
 	}
 	deleteCookie(w, CookieSession)
 	http.Redirect(w, r, "/signin", http.StatusFound)
+}
+
+type UserMiddleware struct {
+	SessionService *models.SessionService
+}
+
+func (umw UserMiddleware) SetUser(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		token, err := readCookie(r, CookieSession)
+		if err != nil {
+			fmt.Println("SetUser: readCookie error")
+			next.ServeHTTP(w, r)
+			return
+		}
+		user, err := umw.SessionService.LookupUser(token)
+		if err != nil {
+			fmt.Println("SetUser: LookupUser error")
+			next.ServeHTTP(w, r)
+			return
+		}
+		ctx := r.Context()
+		ctx = context.WithUser(ctx, user)
+		r = r.WithContext(ctx)
+		next.ServeHTTP(w, r)
+	})
+}
+
+func (umw UserMiddleware) RequireUser(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		user := context.User(r.Context())
+		if user == nil {
+			http.Redirect(w, r, "/signin", http.StatusFound)
+			return
+		}
+		next.ServeHTTP(w, r)
+	})
 }
