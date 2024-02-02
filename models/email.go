@@ -6,10 +6,12 @@ import (
 	"github.com/go-mail/mail/v2"
 )
 
+// ---------------------------------------------------------------------------
 const (
 	DefaultSender = "info@ethanmarchand.com"
 )
 
+// ---------------------------------------------------------------------------
 type Email struct {
 	From      string
 	To        string
@@ -18,6 +20,7 @@ type Email struct {
 	HTML      string
 }
 
+// ---------------------------------------------------------------------------
 type SMTPConfig struct {
 	Host     string
 	Port     int
@@ -25,6 +28,7 @@ type SMTPConfig struct {
 	Password string
 }
 
+// ---------------------------------------------------------------------------
 func NewEmailService(config SMTPConfig) *EmailService {
 	es := EmailService{
 		dialer: mail.NewDialer(config.Host, config.Port, config.Username, config.Password),
@@ -32,6 +36,7 @@ func NewEmailService(config SMTPConfig) *EmailService {
 	return &es
 }
 
+// ---------------------------------------------------------------------------
 type EmailService struct {
 	// DefaultSender is used as the default when one isn't provided for an email. This is also used in functions where the email is predetermined like when you click forgot password.
 	DefaultSender string
@@ -40,6 +45,7 @@ type EmailService struct {
 	dialer *mail.Dialer
 }
 
+// ---------------------------------------------------------------------------
 func (es *EmailService) Send(email Email) error {
 	msg := mail.NewMessage()
 	msg.SetHeader("To", email.To)
@@ -61,11 +67,12 @@ func (es *EmailService) Send(email Email) error {
 	return nil
 }
 
+// ---------------------------------------------------------------------------
 func (es *EmailService) ForgotPassword(to, resetURL string) error {
 	email := Email{
 		Subject:   "Reset your password",
 		To:        to,
-		Plaintext: "To reset your password, please viti the following link: " + resetURL,
+		Plaintext: "To reset your password, please visit the following link: " + resetURL,
 		HTML:      `<p>To reset your password, please visit the following link: <a href="` + resetURL + `">` + resetURL + `</a></p>`,
 	}
 	err := es.Send(email)
@@ -75,6 +82,7 @@ func (es *EmailService) ForgotPassword(to, resetURL string) error {
 	return nil
 }
 
+// ---------------------------------------------------------------------------
 func (es *EmailService) setFrom(msg *mail.Message, email Email) {
 	var from string
 	switch {
