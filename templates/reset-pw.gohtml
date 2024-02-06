@@ -8,14 +8,24 @@
 			</div>
 			<div class="py-2">
 				<label for="password" class="text-gray-800">New Password</label>
-				<input name="password" id="password" type="password" required class="w-full rounded border-gray-300"{{if .Email}}autofocus{{end}}/>
+				<input name="password" id="password" type="password" required class="w-full rounded border-gray-300" autofocus/>
 			</div>
-			<div class="py-4">
-				<button type="submit" class="w-full py-3 bg-blue-500 hover:bg-blue-700 rounded text-white">Signin</button>
+			{{ if .Token }}
+			<div class="hidden">
+				<input type="hidden" id="token" name="token" value="{{ .Token }}">
+			</div>
+			{{ else }}
+			<div class="py-2">
+				<label for="token" class="text-gray-800">Password Reset Token</label>
+				<input name="token" id="token" type="text" required class="w-full rounded border-gray-300"/>
+			</div>
+			{{ end }}
+			<div class="py-4">   
+				<button type="submit" class="w-full py-3 bg-blue-500 hover:bg-blue-700 rounded text-white">Update Password</button>
 			</div>
 			<div class="py-2 w-full flex justify-between">
 				<p class="text-xs text-gray-500 pr-12">Need an account? <a href="/signup" class="underline hover:text-gray-600">Sign up</a></p>
-				<p class="text-xs text-gray-500"><a href="/forgot-pw" class="underline hover:text-gray-600">Forgot your password?</a></p>
+				<p class="text-xs text-gray-500"><a href="/signin" class="underline hover:text-gray-600">Sign in</a></p>
 			</div>
 		</form>
 	</div>

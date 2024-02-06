@@ -1,9 +1,14 @@
 package models
 
 import (
+	"crypto/sha256"
 	"database/sql"
+	"encoding/base64"
 	"fmt"
+	"strings"
 	"time"
+
+	"github.com/ethanjmachand/lenslocked/rand"
 )
 
 const (
@@ -24,10 +29,36 @@ type PasswordResetService struct {
 	Duration      time.Duration // Duration is the amount of time that a password reset is valid for.
 }
 
-func (servcice *PasswordResetService) Create(email string) (*PasswordReset, error) {
-	return nil, fmt.Errorf("TODO: Implement PasswordResetService.Create")
+func (service *PasswordResetService) Create(email string) (*PasswordReset, error) {
+	// verify we have a valid email address, and get their ID
+	email = strings.ToLower(email)
+	var userID int
+	row := service.DB.QueryRow(`
+	SELECT id
+	FROM Users
+	WHERE email = $1;`, email)
+	err := row.Scan(&userID)
+	if err != nil {
+		// TODO: Consider returning a specific err when the user does not exist
+		return nil, fmt.Errorf("create: %w", err)
+	}
+	// Build the PasswordReset
+	bytesPerToken := service.BytesPerToken
+	if bytesPerToken < MinBytesPerToken {
+		bytesPerToken = MinBytesPerToken
+	}
+	token, err := rand.String(bytesPerToken)
+	if err != nil {
+		return nil, fmt.Errorf("create: %w", err)
+	}
+
 }
 
 func (service *PasswordResetService) Consume(token string) (*User, error) {
 	return nil, fmt.Errorf("TODO: implement PasswordResetService.Consume")
+}
+
+func (service *PasswordResetService) hash(token string) string {
+	tokenhash := sha256.Sum256([]byte(token))
+	return base64.RawURLEncoding.EncodeToString(tokenhash[:])
 }
