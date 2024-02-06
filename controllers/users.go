@@ -179,7 +179,7 @@ func (u Users) ProcessResetPassword(w http.ResponseWriter, r *http.Request) {
 
 	// TODO: Update the user's password.
 
-	// Sign the user in now that their passwor dhas been reset.
+	// Sign the user in now that their password has been reset.
 	// Any errors from this point onward should redirect the user to the sign in page.
 	session, err := u.SessionService.Create(user.ID)
 	if err != nil {

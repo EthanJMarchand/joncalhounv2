@@ -1,0 +1,24 @@
+{{template "header" .}}
+<div class="py-12 flex justify-center">
+	<div class="px-8 py-8 bg-white rounded shadow">
+	<h1 class="pb-8 text-center text-3xl font-bold text-gray-900">Reset your password</h1>
+		<form action="/signin" method="post">
+			<div class="hidden">
+				{{ csrfField }}
+			</div>
+			<div class="py-2">
+				<label for="password" class="text-gray-800">New Password</label>
+				<input name="password" id="password" type="password" required class="w-full rounded border-gray-300"{{if .Email}}autofocus{{end}}/>
+			</div>
+			<div class="py-4">
+				<button type="submit" class="w-full py-3 bg-blue-500 hover:bg-blue-700 rounded text-white">Signin</button>
+			</div>
+			<div class="py-2 w-full flex justify-between">
+				<p class="text-xs text-gray-500 pr-12">Need an account? <a href="/signup" class="underline hover:text-gray-600">Sign up</a></p>
+				<p class="text-xs text-gray-500"><a href="/forgot-pw" class="underline hover:text-gray-600">Forgot your password?</a></p>
+			</div>
+		</form>
+	</div>
+</div>
+
+{{template "footer" .}} 
