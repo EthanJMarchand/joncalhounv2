@@ -51,7 +51,29 @@ func (service *PasswordResetService) Create(email string) (*PasswordReset, error
 	if err != nil {
 		return nil, fmt.Errorf("create: %w", err)
 	}
+	duration := service.Duration
+	if duration == 0 {
+		duration = DefaultResetDuration
+	}
+	pwReset := PasswordReset{
+		UserID:    userID,
+		Token:     token,
+		TokenHash: service.hash(token),
+		ExpiresAt: time.Now().Add(duration),
+	}
 
+	// Insert the passworReset in the DB
+	row = service.DB.QueryRow(`
+		INSERT INTO password_resets (user_id, token_hash, expires_at)
+		VALUES($1, $2, $3) ON CONFLICT (user_id) DO
+		UPDATE
+		SET token_hash = $2, expires_at = $3
+		RETURNING id;`, pwReset.UserID, pwReset.TokenHash, pwReset.ExpiresAt)
+	err = row.Scan(&pwReset.UserID)
+	if err != nil {
+		return nil, fmt.Errorf("Create (in the models package): %w", err)
+	}
+	return &pwReset, nil
 }
 
 func (service *PasswordResetService) Consume(token string) (*User, error) {

@@ -30,7 +30,7 @@ type config struct {
 	}
 }
 
-func loadEvnConfig() (config, error) {
+func loadEnvConfig() (config, error) {
 	var cfg config
 	err := godotenv.Load()
 	if err != nil {
@@ -47,8 +47,8 @@ func loadEvnConfig() (config, error) {
 	if err != nil {
 		return cfg, err
 	}
-	cfg.SMTP.Host = os.Getenv("SMTP_HOST")
-	cfg.SMTP.Host = os.Getenv("SMTP_HOST")
+	cfg.SMTP.Username = os.Getenv("SMTP_USERNAME")
+	cfg.SMTP.Password = os.Getenv("SMTP_PASSWORD")
 	// TODO: CSRF
 	cfg.CSRF.Key = "g9jeH6Gc39OplfGnJKI7654FcLp521ws"
 	cfg.CSRF.Secure = false
@@ -59,7 +59,7 @@ func loadEvnConfig() (config, error) {
 }
 
 func main() {
-	cfg, err := loadEvnConfig()
+	cfg, err := loadEnvConfig()
 	if err != nil {
 		panic(err)
 	}
