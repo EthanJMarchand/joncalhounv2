@@ -222,7 +222,7 @@ func (u Users) ProcessUpdateEmail(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	fmt.Println(user)
-	http.Redirect(w, r, "/", http.StatusFound)
+	http.Redirect(w, r, "/users/me/account", http.StatusFound)
 }
 
 // ---------------------------------------------------------------------------
