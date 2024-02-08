@@ -1,0 +1,13 @@
+{{template "header" .}}
+<div class="py-12 flex justify-center">
+	<div class="px-8 py-8 bg-white rounded shadow">
+		<h1 class="pb-8 text-center text-3xl font-bold text-gray-900">Your email</h1>
+		<p class="text-sm text-gray-600 pb-4">{{ currentUser.Email }}</p>
+		<div class="py-4">
+		<a class="w-full py-3 px-6 bg-blue-500 hover:bg-blue-700 rounded text-white" href="/users/me/account/update">Change Email</a>
+	</div>
+	</div>
+	
+</div>
+
+{{template "footer" .}}

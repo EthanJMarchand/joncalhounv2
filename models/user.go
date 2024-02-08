@@ -78,3 +78,30 @@ func (us *UserService) UpdatePassword(userID int, password string) error {
 	}
 	return nil
 }
+
+func (us *UserService) UpdateEmail(email, newemail, password string) (*User, error) {
+	newemail = strings.ToLower(newemail)
+	user := User{
+		Email: email,
+	}
+	row := us.DB.QueryRow(`
+		SELECT id, password_hash
+		FROM users WHERE email = $1;`, email)
+	err := row.Scan(&user.ID, &user.PasswordHash)
+	if err != nil {
+		return nil, fmt.Errorf("UpdateEmail(row.scan): %w", err)
+	}
+	err = bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(password))
+	if err != nil {
+		return nil, fmt.Errorf("UpdateEmail(comparehashandpassword): %w", err)
+	}
+	_, err = us.DB.Exec(`
+	UPDATE users
+	SET email = $1
+	WHERE id = $2;`, newemail, user.ID)
+	if err != nil {
+		return nil, fmt.Errorf("updateemail: %w", err)
+	}
+	user.Email = newemail
+	return &user, nil
+}

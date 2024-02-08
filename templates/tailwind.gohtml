@@ -21,7 +21,8 @@
 						<div class="hidden">
 							{{ csrfField }}
 						</div>
-						<button type="submit" class="hover:text-blue-500">Sign out</button>
+						<a class="hover:text-blue-500" href="/users/me/account">{{ currentUser.Email }}</a>
+						<button type="submit" class="hover:text-blue-500 pl-6">Sign out</button>
 					</form>
 				{{ else }}
 					<a id="signin" class="hover:text-blue-500" href="/signin">Sign in</a>
