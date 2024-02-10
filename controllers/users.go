@@ -6,6 +6,7 @@ import (
 	"net/url"
 
 	"github.com/ethanjmachand/lenslocked/context"
+	"github.com/ethanjmachand/lenslocked/errors"
 	"github.com/ethanjmachand/lenslocked/models"
 )
 
@@ -39,12 +40,18 @@ func (u Users) NewUser(w http.ResponseWriter, r *http.Request) {
 // ---------------------------------------------------------------------------
 // CreateUser is the handler for when someone POST to /users route. It creates the session token, and creates and sets the cookie.
 func (u Users) CreateUser(w http.ResponseWriter, r *http.Request) {
-	email := r.FormValue("email")
-	password := r.FormValue("password")
-	user, err := u.UserService.Create(email, password)
+	var data struct {
+		Email    string
+		Password string
+	}
+	data.Email = r.FormValue("email")
+	data.Password = r.FormValue("password")
+	user, err := u.UserService.Create(data.Email, data.Password)
 	if err != nil {
-		fmt.Println(err)
-		http.Error(w, "Something went wrong", http.StatusInternalServerError)
+		if errors.Is(err, models.ErrEmailTaken) {
+			err = errors.Public(err, "That email is already associated with an account.")
+		}
+		u.Templates.NewUser.Execute(w, r, data, err)
 		return
 	}
 	session, err := u.SessionService.Create(user.ID)

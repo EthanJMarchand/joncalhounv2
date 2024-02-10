@@ -2,6 +2,7 @@ package views
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"html/template"
 	"io"
@@ -13,6 +14,10 @@ import (
 	"github.com/ethanjmachand/lenslocked/models"
 	"github.com/gorilla/csrf"
 )
+
+type public interface {
+	Public() string
+}
 
 // Must is a helper function that takes a Template, and an error, panics if there is an error, and only returns the Template.
 func Must(t Template, err error) Template {
@@ -33,11 +38,7 @@ func ParseFS(fs fs.FS, patterns ...string) (Template, error) {
 			return "", fmt.Errorf("currentUser not implemented")
 		},
 		"errors": func() []string {
-			return []string{
-				"Don't do that!",
-				"The email address you provided is already associated with an account.",
-				"Something went wrong.",
-			}
+			return nil
 		},
 	},
 	)
@@ -57,19 +58,23 @@ type Template struct {
 }
 
 // Execute is a method on the Template type that takes a http.ResponseWriter, a *http.Request and data, and writes to bytes.Buffer, but only to catch an error in our tpl.Funcs before setting the header for the user. At the very end, io.Copy copies the &buf and writes to w.
-func (t Template) Execute(w http.ResponseWriter, r *http.Request, data interface{}) {
+func (t Template) Execute(w http.ResponseWriter, r *http.Request, data interface{}, errs ...error) {
 	tpl, err := t.htmlTpl.Clone()
 	if err != nil {
 		log.Printf("cloning template %v", err)
 		http.Error(w, "There was an error rendering the page", http.StatusInternalServerError)
 		return
 	}
+	errMsgs := errMessages(errs...)
 	tpl = tpl.Funcs(template.FuncMap{
 		"csrfField": func() template.HTML {
 			return csrf.TemplateField(r)
 		},
 		"currentUser": func() *models.User {
 			return context.User(r.Context())
+		},
+		"errors": func() []string {
+			return errMsgs
 		},
 	})
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
@@ -81,4 +86,18 @@ func (t Template) Execute(w http.ResponseWriter, r *http.Request, data interface
 		return
 	}
 	io.Copy(w, &buf)
+}
+
+func errMessages(errs ...error) []string {
+	var msgs []string
+	for _, err := range errs {
+		var pubErr public
+		if errors.As(err, &pubErr) {
+			msgs = append(msgs, pubErr.Public())
+		} else {
+			fmt.Println(err)
+			msgs = append(msgs, "Something went wrong.")
+		}
+	}
+	return msgs
 }
