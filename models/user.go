@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/jackc/pgconn"
 	"github.com/jackc/pgerrcode"
-	"github.com/jackc/pgx/v5/pgconn"
 	"golang.org/x/crypto/bcrypt"
 )
 
