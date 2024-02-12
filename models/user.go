@@ -11,10 +11,6 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-var (
-	ErrEmailTaken = errors.New("models: email address already taken")
-)
-
 // User type is the matching struct to the DB.
 type User struct {
 	ID           int
