@@ -38,7 +38,7 @@ func (service *GalleryService) ByID(id int) (*Gallery, error) {
 	row := service.DB.QueryRow(`
 		SELECT title, user_id
 		FROM galleries
-		WHERE id - $1;`, gallery.ID)
+		WHERE id = $1;`, gallery.ID)
 	err := row.Scan(&gallery.Title, &gallery.UserID)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {

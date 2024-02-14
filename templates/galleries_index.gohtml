@@ -1,0 +1,35 @@
+{{ template "header" . }}
+<div class="max-w-7xl mx-auto p-5">
+	<div class="py-6 w-full">
+		<h1 class="pt-4 pb-8 text-3xl font-bold text-grey-800">My Galleries</h1>
+	</div>
+	<div class="py-8">
+		<a class="py-2 px-8 bg-blue-500 hover:bg-blue-600 rounded text-white" href="/galleries/new">Create New Gallery</a>
+	</div>
+	<table class="w-full table-fixed">
+		<thead>
+			<tr>
+				<th class="p-2 text-left w-24">ID</th>
+				<th class="p-2 text-left">Title</th>
+				<th class="p-2 text-left w-96">Actions</th>
+			</tr>		
+		</thead>
+		{{ range .Galleries }}
+		<tbody>
+			<tr class="border">
+				<td class="p-2 border">{{ .ID }}</td>
+				<td class="p-2 border">{{ .Title }}</td>
+				<td class="p-2 border flex space-x-2">
+					<a class="hover:bg-blue-200 py-1 px-2 bg-blue-100 border border-blue-600 text-xs text-blue-600 rounded" href="/galleries/{{ .ID }}">View</a>
+					<a class="hover:bg-green-200 py-1 px-2 bg-blue-100 border border-green-600 text-xs text-green-600 rounded" href="/galleries/{{ .ID }}/edit">Edit</a>
+					<form onsubmit="return confirm('Do you reallt want to delete this gallery?');" action="/galleries/{{ .ID }}/delete" method="post">
+						{{ csrfField }}
+						<button class="hover:bg-red-200 py-1 px-2 bg-blue-100 border border-red-600 text-xs text-red-600 rounded" type="submit">Delete</button>
+					</form>
+				</td>
+			</tr>
+		</tbody>
+		{{ end }}
+	</table>
+</div>
+{{ template "footer" . }}
