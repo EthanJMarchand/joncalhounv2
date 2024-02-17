@@ -1,2 +1,5 @@
 # Env Variables
 .env
+
+# Images directory for development
+images/

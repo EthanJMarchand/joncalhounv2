@@ -17,7 +17,33 @@
 		<div class="py-4">
 			<button type="submit" class="py-2 px-8 bg-blue-500 hover:bg-blue-700 rounded text-white">Update</button>
 		</div>
+		<div class="py-4">
+		</div>
 	</form>
+	<form action="/galleries/{{ .ID }}/images" method="post" enctype="multipart/form-data">
+		{{ csrfField }}
+		<div class="py-2">
+			<label for="images" class="block mb-2 text-sm font-semibold text-gray-800">Add Images<p class="py2 text-xs text-gray-600 font-normal">Please only upload .jpg, .png, and .gif files.</p></label>
+			<input type="file" multiple name="images" id="images" accept="image/png, image/jpg, image/gif">
+		</div>
+		<button type="submit" class="py-2 px-8 bg-green-500 hover:bg-green-700 rounded text-white">Upload</button>
+	</form>
+	<div class="py-4">
+		<h2 class="pb-4 text-sm font-semibold text-gray-800">Current Images</h2>
+		<div class="py-4 grid grid-cols-4 gap-2">
+			{{ range .Images }}
+				<div class="h-min w-full relative">
+					<div class="absolute top-2 right-2">
+						<form action="/galleries/{{ .GalleryID }}/images/{{ .FilenameEscaped }}/delete" class="" method="post" onsubmit="return confirm('Do you really want to delete this image?');">
+							{{ csrfField }}
+							<button type="submit" class="p-1 text-xs text-red-900 bg-red-100 border border-red-400 rounded">Delete</button>
+						</form>
+					</div>
+					<img src="/galleries/{{ .GalleryID }}/images/{{ .FilenameEscaped }}" alt="" class="w-full">
+				</div>
+			{{ end }}
+		</div>
+	</div>
 	<!-- Danger Actions -->
 	<div class="py-4">
 		<h2>Dangerous Actions</h2>
