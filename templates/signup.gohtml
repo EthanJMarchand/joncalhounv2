@@ -8,11 +8,11 @@
 		</div>
 			<div class="py-2">
 				<label for="email" class="text-gray-800">Email Address</label>
-				<input name="email" id="email" type="email" required autocomplete="email" class="w-full rounded border-gray-300" value="{{.Email}}" {{if not .Email}}autofocus{{end}}/>
+				<input name="email" id="email" type="email" required autocomplete="email" class="w-full rounded border-gray-300 p-2" value="{{.Email}}" {{if not .Email}}autofocus{{end}}/>
 			</div>
 			<div class="py-2">
 				<label for="password" class="text-gray-800">Password</label>
-				<input name="password" id="password" type="password" required class="w-full rounded border-gray-300"{{if .Email}}autofocus{{end}}/>
+				<input name="password" id="password" type="password" required class="w-full rounded border-gray-300 p-2"{{if .Email}}autofocus{{end}}/>
 			</div>
 			<div class="py-4">
 				<button type="submit" class="w-full py-3 bg-blue-500 hover:bg-blue-700 rounded text-white">Signup</button>
