@@ -22,5 +22,5 @@ WORKDIR /app
 COPY ./assets ./assets
 COPY .env .env
 COPY --from=builder /app/server ./server
-COPY --from=tailwind-builder /styles.css app/assets/styles.css
+COPY --from=tailwind-builder /styles.css /app/assets/styles.css
 CMD ./server

@@ -20,7 +20,7 @@ func newCookie(name, value string) *http.Cookie {
 	return &cookie
 }
 
-// setCookie takes a http.ResponseWriter, a cookie name, and a cookie value, and sets them. This function returns nothing.
+// setCookie takes's a http.ResponseWriter, a cookie name, and a cookie value, and sets them. This function returns nothing.
 func setCookie(w http.ResponseWriter, name, value string) {
 	cookie := newCookie(name, value)
 	http.SetCookie(w, cookie)
