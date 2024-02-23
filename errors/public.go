@@ -7,7 +7,7 @@ func Public(err error, msg string) error {
 	return publicError{err, msg}
 }
 
-// PublicError is a struct :)
+// PublicError is a struct
 type publicError struct {
 	err error
 	msg string
