@@ -86,8 +86,17 @@ func (u Users) ProcessSignIn(w http.ResponseWriter, r *http.Request) {
 	data.Password = r.FormValue("password")
 	user, err := u.UserService.Authenticate(data.Email, data.Password)
 	if err != nil {
-		fmt.Println(err)
-		http.Error(w, "Something went wrong.", http.StatusInternalServerError)
+		if errors.Is(err, models.ErrWrongPassword) {
+			err = errors.Public(err, "Password is incorrect.")
+			u.Templates.SignIn.Execute(w, r, data, err)
+			return
+		}
+		if errors.Is(err, models.ErrNoEmail) {
+			err = errors.Public(err, "No user with that email")
+			u.Templates.SignIn.Execute(w, r, data, err)
+			return
+		}
+		http.Error(w, "Something went wrong", http.StatusInternalServerError)
 		return
 	}
 	session, err := u.SessionService.Create(user.ID)
@@ -202,7 +211,7 @@ func (u Users) ProcessResetPassword(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	setCookie(w, CookieSession, session.Token)
-	http.Redirect(w, r, "/users/me", http.StatusFound)
+	http.Redirect(w, r, "/galleries", http.StatusFound)
 }
 
 func (u Users) Account(w http.ResponseWriter, r *http.Request) {
