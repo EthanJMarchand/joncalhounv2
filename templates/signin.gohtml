@@ -8,18 +8,18 @@
 			</div>
 			<div class="py-2">
 				<label for="email" class="text-gray-800">Email Address</label>
-				<input name="email" id="email" type="email" required autocomplete="email" class="w-full" value="{{.Email}}" {{if not .Email}}autofocus{{end}}/>
+				<input name="email" id="email" type="email" required autocomplete="email" class="w-full rounded" value="{{.Email}}" {{if not .Email}}autofocus{{end}}/>
 			</div>
 			<div class="py-2">
 				<label for="password" class="text-gray-800">Password</label>
-				<input name="password" id="password" type="password" required class="w-full"{{if .Email}}autofocus{{end}}/>
+				<input name="password" id="password" type="password" required class="w-full rounded"{{if .Email}}autofocus{{end}}/>
 			</div>
 			<div class="py-4">
 				<button type="submit" class="w-full py-3 bg-blue-500 hover:bg-blue-700 rounded text-white">Signin</button>
 			</div>
 			<div class="py-2 w-full flex justify-between">
 				<p class="text-xs text-gray-500 pr-12">Need an account? <a href="/signup" class="underline hover:text-gray-600">Sign up</a></p>
-				<p class="text-xs text-gray-500"><a href="/forgot-pw" class="underline hover:text-gray-600">Forgot your password?</a></p>
+				<p class="text-xs text-gray-500 text-end"><a href="/forgot-pw" class="underline hover:text-gray-600">Forgot your password?</a></p>
 			</div>
 		</form>
 	</div>

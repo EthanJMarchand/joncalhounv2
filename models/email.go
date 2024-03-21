@@ -77,7 +77,7 @@ func (es *EmailService) ForgotPassword(to, resetURL string) error {
 	}
 	err := es.Send(email)
 	if err != nil {
-		return fmt.Errorf("forgot password email: %e", err)
+		return fmt.Errorf("forgot password email: %w", err)
 	}
 	return nil
 }
